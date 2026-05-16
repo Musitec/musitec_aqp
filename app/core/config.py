@@ -21,4 +21,5 @@ class Settings:
     CLOUDINARY_API_SECRET=os.getenv("CLOUDINARY_API_SECRET")
     ENV = os.getenv("ENV", "development")
     RUN_SCHEDULER = os.getenv("RUN_SCHEDULER", "false")
+    RESEND_API_KEY= os.getenv("RESEND_API_KEY")
 settings = Settings()
