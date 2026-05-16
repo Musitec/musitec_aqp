@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Body
 
 router = APIRouter(prefix="/api/cart", tags=["Cart"])
 
-@router.get("/")
+@router.get("/my-cart")
 async def get_cart(user=Depends(is_client)):
     return await services.get_my_cart(user_id=str(user["id"]))
 
