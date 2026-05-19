@@ -12,7 +12,7 @@ from typing import List, Optional
 
 resend.api_key = settings.RESEND_API_KEY
 
-DEFAULT_FROM = "onboarding@resend.dev"
+DEFAULT_FROM = "Musitec <noreply@musitecaqp.com>"
 
 async def send_email_resend(
     to: List[str],

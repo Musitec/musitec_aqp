@@ -14,9 +14,7 @@ from zoneinfo import ZoneInfo
 DEFAULT_TZ = ZoneInfo("UTC")
 
 origins = [
-    "https://musitec-aqp.com",
-    "https://musitec-aqp.vercel.app",
-    "http://127.0.0.1:5173"
+    "https://www.musitecaqp.com"
 ]
 
 app = FastAPI(title="Musitec API")
