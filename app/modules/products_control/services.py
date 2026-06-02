@@ -400,9 +400,18 @@ async def update_product(
     if variants is not None:
         try:
             variants = json.loads(variants)
-            if not isinstance(variants, list) or len(variants) == 0:
+            if not isinstance(variants, list):
                 raise ValueError()
             clean_variants = []
+            if len(clean_variants) == 0:
+                if price is None or stock is None:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Si eliminas todas las variantes debes enviar price y stock"
+                    )
+                product.pop("variants", None)
+                product["price"] = price
+                product["stock"] = int(stock)
             seen = set()
             for v in variants:
                 if not isinstance(v, dict):
@@ -426,9 +435,12 @@ async def update_product(
                     "price": price_v
                 })
             clean_variants.sort(key=lambda x: (x["price"], x["option"]))
-            product["variants"] = clean_variants
-            product["price"] = None
-            product["stock"] = None
+            if len(clean_variants) > 0:
+                product["variants"] = clean_variants
+                product["price"] = None
+                product["stock"] = None
+            else:
+                product.pop("variants", None)
         except:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
