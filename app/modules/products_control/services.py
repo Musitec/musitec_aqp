@@ -107,7 +107,7 @@ def apply_basic_updates(product, name, description, catalog, price, stock):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="El precio no puede ser negativo")
     if name:
         product["name"] = name
-    if description:
+    if description is not None:
         product["description"] = description
     if catalog:
         product["catalog"] = catalog
@@ -117,7 +117,7 @@ def apply_basic_updates(product, name, description, catalog, price, stock):
         product["stock"] = stock
 
 def update_specifications(product, specifications):
-    if specifications:
+    if specifications is not None:
         try:
             new_specs = json.loads(specifications)
             if has_empty_object(new_specs):
@@ -230,7 +230,7 @@ async def create_product(
     files: list[UploadFile],
     product_name: str,
     specifications: str,
-    description: str,
+    description: Optional[str],
     catalog: str,
     request: Request,
     price: Optional[float]=None,
@@ -307,20 +307,22 @@ async def create_product(
             detail="Máximo 5 imágenes por producto"
         )
     await validate_images(files)
-    try:
-        specs = json.loads(specifications, object_pairs_hook=no_duplicate_keys)
-        if not isinstance(specs, dict):
-            raise ValueError()
-        if has_empty_object(specs):
+    specs = {}
+    if specifications and specifications.strip():
+        try:
+            specs = json.loads(specifications, object_pairs_hook=no_duplicate_keys)
+            if not isinstance(specs, dict):
+                raise ValueError()
+            if has_empty_object(specs):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="specifications contiene objetos JSON vacíos"
+                )
+        except ValueError as e:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="specifications contiene objetos JSON vacíos"
+                detail=str(e) or "specifications debe ser un JSON válido"
             )
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e) or "specifications debe ser un JSON válido"
-        )
     now = datetime.now(timezone.utc)
     images = []
     product_id = None

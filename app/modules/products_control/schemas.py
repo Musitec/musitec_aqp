@@ -5,8 +5,8 @@ from fastapi import Form
 class CreateProduct(BaseModel):
     catalog: str
     product_name: str
-    specifications: str
-    description: str
+    specifications: Optional[str] = None
+    description: Optional[str] = None
     price: Optional[float] = None
     stock: Optional[str] = None
     variants: Optional[str] = None
@@ -31,8 +31,8 @@ class CreateProduct(BaseModel):
         cls,
         catalog: str = Form(...),
         product_name: str = Form(...),
-        specifications: str = Form(...),
-        description: str = Form(...),
+        specifications: Optional[str] = Form(None),
+        description: Optional[str] = Form(None),
         price: Optional[float] = Form(None),
         stock: Optional[str] = Form(None),
         variants: Optional[str] = Form(None)
