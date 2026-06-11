@@ -1036,3 +1036,9 @@ async def products_dashboard(
         "total_pages": math.ceil(total_count / page_size),
         "products": products
     }
+
+async def get_all_catalogs():
+    try:
+        return await products_repository.get_all_catalogs()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error en el catalogo")

@@ -225,3 +225,12 @@ def get_products_dashboard(match, sort, page, page_size, add_popularity):
         }
     })
     return products_collection.aggregate(pipeline)
+
+async def get_all_catalogs():
+    catalogs = await products_collection.distinct(
+        "catalog",
+        {
+            "is_active": True
+        }
+    )
+    return sorted(catalogs)

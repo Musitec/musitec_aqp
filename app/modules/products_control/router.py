@@ -194,3 +194,7 @@ async def get_dashboard(
         page=page,
         page_size=page_size
     )
+
+@router.get("/product/catalogs")
+async def get_all_catalogs():
+    return await services.get_all_catalogs()
