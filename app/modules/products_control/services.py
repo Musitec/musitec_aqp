@@ -430,12 +430,18 @@ async def update_product(
             else:
                 if price is None or stock is None:
                     raise HTTPException(
-                        status_code=400,
+                        status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Si eliminas todas las variantes debes enviar price y stock"
                     )
                 product.pop("variants", None)
                 product["price"] = price
                 product["stock"] = int(stock)
+        except Exception as e:
+            print(e)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Problemas en el servidor"
+            )
     else:
         if price is None and stock is None and "variants" not in product_db:
             raise HTTPException(
