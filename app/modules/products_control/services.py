@@ -391,6 +391,7 @@ async def update_product(
     tempIds: Optional[List[str]] = Form(None),
     imageOrder: Optional[str] = Form(None)
 ):
+    print(f"Variantes: {variants}")
     if variants is not None and len(variants.strip()) > 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
