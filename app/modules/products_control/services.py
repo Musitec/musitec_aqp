@@ -405,15 +405,6 @@ async def update_product(
             if not isinstance(variants, list):
                 raise ValueError()
             clean_variants = []
-            if len(clean_variants) == 0:
-                if price is None or stock is None:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Si eliminas todas las variantes debes enviar price y stock"
-                    )
-                product.pop("variants", None)
-                product["price"] = price
-                product["stock"] = int(stock)
             seen = set()
             for v in variants:
                 if not isinstance(v, dict):
@@ -427,35 +418,24 @@ async def update_product(
                 if key in seen:
                     continue
                 seen.add(key)
-                if not isinstance(stock_v, int) or stock_v < 0:
-                    raise ValueError()
-                if not isinstance(price_v, (int, float)) or price_v < 0:
-                    raise ValueError()
                 clean_variants.append({
                     "option": option.strip(),
                     "stock": stock_v,
                     "price": price_v
                 })
-            clean_variants.sort(key=lambda x: (x["price"], x["option"]))
             if len(clean_variants) > 0:
                 product["variants"] = clean_variants
                 product["price"] = None
                 product["stock"] = None
             else:
+                if price is None or stock is None:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Si eliminas todas las variantes debes enviar price y stock"
+                    )
                 product.pop("variants", None)
-        except:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="variants inválido"
-            )
-        apply_basic_updates(
-            product=product,
-            name=name,
-            description=description,
-            catalog=catalog,
-            price=None,
-            stock=None
-        )
+                product["price"] = price
+                product["stock"] = int(stock)
     else:
         if price is None and stock is None and "variants" not in product_db:
             raise HTTPException(
