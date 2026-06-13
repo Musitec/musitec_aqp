@@ -391,7 +391,7 @@ async def update_product(
     tempIds: Optional[List[str]] = Form(None),
     imageOrder: Optional[str] = Form(None)
 ):
-    if variants is not None and (price is not None or stock is not None):
+    if variants is not None and len(variants.strip()) > 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No puedes enviar stock o price junto con variants"
@@ -439,8 +439,8 @@ async def update_product(
         except Exception as e:
             print(e)
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Problemas en el servidor"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="variants inválido"
             )
     else:
         if price is None and stock is None and "variants" not in product_db:
