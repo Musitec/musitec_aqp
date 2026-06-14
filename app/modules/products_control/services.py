@@ -391,6 +391,9 @@ async def update_product(
     tempIds: Optional[List[str]] = Form(None),
     imageOrder: Optional[str] = Form(None)
 ):
+    print("VARIANTS:", variants)
+    print("PRICE:", price)
+    print("STOCK:", stock)
     if variants is not None and len(variants.strip()) > 0:
         if price is not None or stock is not None:
             raise HTTPException(
