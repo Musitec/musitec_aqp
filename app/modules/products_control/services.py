@@ -391,9 +391,6 @@ async def update_product(
     tempIds: Optional[List[str]] = Form(None),
     imageOrder: Optional[str] = Form(None)
 ):
-    print("VARIANTS:", variants)
-    print("PRICE:", price)
-    print("STOCK:", stock)
     if variants is not None:
         try:
             temp_variants = json.loads(variants)
