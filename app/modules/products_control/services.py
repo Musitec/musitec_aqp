@@ -546,7 +546,6 @@ async def update_product(
         parts.append(product.get("name", "") or "")
         parts.append(product.get("description", "") or "")
         parts.append(product.get("catalog", "") or "")
-
         specs = product.get("specifications", {})
         if isinstance(specs, dict):
             for k, v in specs.items():
@@ -560,7 +559,15 @@ async def update_product(
         product_to_update = product.copy()
         product_to_update.pop("_id", None)
         set_data = compute_set_diff(original_product, product_to_update)
+        unset_data = {}
+        for key in original_product:
+            if key not in product_to_update:
+                unset_data[key] = ""
         update_data = {}
+        if set_data:
+            update_data["$set"] = set_data
+        if unset_data:
+            update_data["$unset"] = unset_data
         if set_data:
             update_data["$set"] = set_data
         clean_images = []
