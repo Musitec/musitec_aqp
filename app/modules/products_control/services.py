@@ -561,7 +561,7 @@ async def update_product(
         set_data = compute_set_diff(original_product, product_to_update)
         unset_data = {}
         for key in original_product:
-            if key not in product_to_update:
+            if key not in product_to_update and key != "_id":
                 unset_data[key] = ""
         update_data = {}
         if set_data:
