@@ -391,12 +391,12 @@ async def update_product(
     tempIds: Optional[List[str]] = Form(None),
     imageOrder: Optional[str] = Form(None)
 ):
-    print(f"Variantes: {variants}")
     if variants is not None and len(variants.strip()) > 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No puedes enviar stock o price junto con variants"
-        )
+        if price is not None or stock is not None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No puedes enviar stock o price junto con variants"
+            )
     product_db = await get_product_or_404(product_id)
     original_product = copy.deepcopy(product_db)
     product = copy.deepcopy(product_db)
